@@ -9,13 +9,9 @@ class App(Frame):
     userRating = ''
     
     def __init__(self, master=None):
-
         Frame.__init__(self, master)
-
         self.master = master
-
         self.layout()
-
 
     def layout(self):
 
@@ -26,7 +22,6 @@ class App(Frame):
         self.ratingLabel.grid(row=0, column=2)
        
         self.entries = [Entry() for i in range(0,20)]
-
         rowno = 0
         for i in range(0,20):
             rowno += 1 - i%2
@@ -36,11 +31,7 @@ class App(Frame):
         self.GetRec = Button(text='Get Recommendations', command = self.passData)
         self.GetRec.grid(row = 11, columnspan = 3)
 
-        #Button(text='Top Movies', command = self.topmovies)
-        
-
     def passData(self):
-       
         for n in range(0, 20):
             if self.entries[n].get() == '':
                 continue
@@ -50,20 +41,12 @@ class App(Frame):
                 self.userRating += self.entries[n].get() + ','
 
         self.userRating = self.userRating[:-1]
-
         self.display()
 
     def display(self):
-
         for title in recommender.SimpleRecommender(self.userRating).recommendations:
             Label(self.master, text=title).grid(columnspan = 3)
      
-    #def topmovies(self):
-        
-
-
-
-
 
 def main():
     root = Tk()

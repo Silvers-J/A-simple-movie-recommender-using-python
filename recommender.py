@@ -12,36 +12,26 @@ class SimpleRecommender():
 
     recommendations = []
 
-
     def __init__(self, ratings_by_user):
-
         self.userRating = self.getUserList(ratings_by_user)
-            
         self.ratings['rating'] *= 2
-        
+
         self.M = self.ratings.pivot_table(index = ['userId'],
                                 columns = ['movieId'],
                                 values = 'rating')
         self.M.fillna(0)
         self.recommendations = self.getRecommendations(self.userRating) 
-
-
-    
+   
     def getUserList(self, ratings_by_user):
         '''
         Takes the input from the user as movie:rating pair
         '''
         userRatings = {}
         for title in ratings_by_user.split(','):
-
             key, value = title.split(':')
-
             key = self.movies.loc[self.movies['title'].str.startswith(key), 'movieId'].values[0]
-        
             userRatings[key] = int(value)
-    
         return userRatings
-
 
     def matchedList(self, userMovieList):
         '''
@@ -51,33 +41,24 @@ class SimpleRecommender():
 
         matched = {}
         for user in self.M.index:
-        
             List = {}
             tempList = {}
         
             for movie in self.M.columns:
                 if movie in userMovieList.keys():
-        
                     if self.M[movie][user] > 0:
-                
                         tempList[movie] = self.M[movie][user]
                         List.update(tempList)
-                    
                         del tempList[movie]
-                                    
                 else:
                     continue
-        
             matched[user] = List
-
         newDict = dict(matched)
     
         for keys in matched.keys():
             if not len(matched[keys]) > 3:
                 del newDict[keys]
-
         return newDict
-
 
     def getRecommendations(self, userList):
 
@@ -136,30 +117,24 @@ class SimpleRecommender():
         sumy = 0.0
 
         for x, y in ratingList:
-
             numerator += (x - meanX) * (y - meanY)
-
             sumx += (x - meanX)**2
-
             sumy += (y - meanY)**2
 
             if not (sumx == 0 or sumy == 0):
                 corr = numerator / pow(sumx * sumy, 0.5)
-
             else:
                 corr = 0
-        
         return corr
 
     def topMovies(self):
+         top_movies = []
     
-        top_movies = []
-    
-        for movie in self.M.columns:
+         for movie in self.M.columns:
             if self.M[movie].mean() >= 8.5 and self.M[movie].count() > 50:
                 top_movies.append(movie)
             
-        return top_movies[:10]
+         return top_movies[:10]
 
 
 
